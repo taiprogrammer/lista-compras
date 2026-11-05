@@ -6,6 +6,7 @@ import { Input } from "../components/Input";
 import { Filter } from "../components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "../components/Item";
+import { useState } from "react";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE];
 
@@ -43,6 +44,11 @@ const ITEMS = [
 ];
 
 export function Home() {
+  const [filter, setFilter] = useState<FilterStatus>(FilterStatus.PENDING);
+
+  function handleUpdate(value: FilterStatus) {
+    setFilter(value);
+  }
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/logo.png")} style={styles.logo} />
@@ -56,7 +62,12 @@ export function Home() {
         <View style={styles.header}>
           <View style={styles.filters}>
             {FILTER_STATUS.map((status) => (
-              <Filter key={status} status={status} isActive={true} />
+              <Filter
+                key={status}
+                status={status}
+                isActive={filter === status}
+                onPress={() => handleUpdate(status)}
+              />
             ))}
           </View>
           <TouchableOpacity activeOpacity={0.8}>
@@ -81,9 +92,11 @@ export function Home() {
             />
           )}
           showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <View style={styles.separator}/>}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           contentContainerStyle={styles.listContent}
-          ListEmptyComponent={() => <Text style={styles.empty}>Nenhum item encontrado.</Text>}
+          ListEmptyComponent={() => (
+            <Text style={styles.empty}>Nenhum item encontrado.</Text>
+          )}
         />
       </View>
 
